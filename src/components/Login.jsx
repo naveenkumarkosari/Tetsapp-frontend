@@ -1,8 +1,7 @@
-
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,23 +18,19 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors,isSubmitting},
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
   });
 
-  const mutation = useMutation((userData) =>
-    axios.post(`${API_BASE_URL}/login`, userData)
-  );
-
   const onSubmit = async (data) => {
     try {
-      const response = await mutation.mutateAsync(data);
+      const response = await axios.post(`${API_BASE_URL}/login`, data);
       localStorage.setItem('token', response.data.token); 
       navigate('/userdetails'); 
     } catch (error) {
       alert(error.response?.data?.message || 'Error logging in');
-      console.log('error in login:',error);
+      console.log('error in login:', error);
     }
   };
 
@@ -68,11 +63,11 @@ const Login = () => {
             )}
           </div>
           <button
-          disabled={isSubmitting}
+            disabled={isSubmitting}
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           >
-            {isSubmitting ? "Loading...":"Log In"}
+            {isSubmitting ? "Loading..." : "Log In"}
           </button>
         </form>
       </div>
